@@ -1,0 +1,53 @@
+.editor-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #111;
+  padding: 20px;
+}
+
+/* Shared font style — display and textarea must match exactly */
+.editor-display,
+.editor-textarea {
+  font-family: 'Georgia', serif;
+  font-size: 1.25rem;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* Display layer sits behind the textarea */
+.editor-display {
+  position: absolute;
+  inset: 0;
+  padding: 20px;
+  pointer-events: none;
+  color: transparent; /* real text is invisible here; textarea shows it */
+  user-select: none;
+}
+
+.editor-ghost {
+  color: #666;
+}
+
+/* Transparent textarea sits on top, user types here */
+.editor-textarea {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  color: #e8e8e8;
+  caret-color: #e8e8e8;
+}
+
+.editor-textarea::placeholder {
+  color: #444;
+}
