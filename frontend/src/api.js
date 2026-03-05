@@ -7,6 +7,9 @@ export async function fetchCompletion(text, context, signal) {
     body: JSON.stringify({ text, context }),
     signal,
   });
+  if (res.status === 429) {
+    throw new Error('daily_limit');
+  }
   const data = await res.json();
   return {
     wordGhost: data.word_ghost ?? '',

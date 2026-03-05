@@ -11,6 +11,7 @@ export default function GhostEditor() {
   const [alternatives, setAlternatives] = useState([]);
   const [sentenceGhost, setSentenceGhost] = useState('');
   const [selecting, setSelecting] = useState(false);
+  const [limitReached, setLimitReached] = useState(false);
   const debounceRef = useRef(null);
   const abortRef = useRef(null);
   const textareaRef = useRef(null);
@@ -35,8 +36,8 @@ export default function GhostEditor() {
         setAlternatives(alternatives);
         setSentenceGhost(sentenceGhost);
       } catch (e) {
-        if (e.name !== 'AbortError') {
-          // Backend not reachable — silent fail
+        if (e.message === 'daily_limit') {
+          setLimitReached(true);
         }
       }
     }, DEBOUNCE_MS);
@@ -118,6 +119,11 @@ export default function GhostEditor() {
 
   return (
     <>
+      {limitReached && (
+        <div className="limit-banner">
+          Daily request limit reached — autocomplete is disabled until tomorrow.
+        </div>
+      )}
       <div className="editor-wrapper">
         <div className="editor-display" aria-hidden="true">
           <span className="editor-text">{text}</span>
