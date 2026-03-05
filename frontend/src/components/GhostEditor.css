@@ -55,7 +55,7 @@
 /* ── Suggestions panel ── */
 .suggestions-panel {
   position: fixed;
-  top: 104px; /* 64px toolbar + 40px page-area padding */
+  top: 40px; /* 40px page-area padding */
   left: calc(50% + 424px); /* just right of the 816px document */
   width: 172px;
   background: #e4e4e4; /* slightly darker than the #f0f0f0 page background */

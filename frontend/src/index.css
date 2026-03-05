@@ -6,7 +6,9 @@
 
 body {
   font-family: Arial, sans-serif;
-  background: #f0f0f0;
+  background-color: #f0f0f0;
+  background-image: radial-gradient(circle, #d8d8d8 1px, transparent 1px);
+  background-size: 24px 24px;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }

@@ -4,20 +4,17 @@ import './App.css';
 export default function App() {
   return (
     <div className="app">
-      <header className="toolbar">
-        <div className="toolbar-left">
-          <div className="toolbar-icon">T</div>
-          <span className="toolbar-title">TypeFast</span>
-        </div>
-        <div className="toolbar-right">
-          <span className="hint">Press <kbd>Tab</kbd> to accept suggestion</span>
-          <span className="hint">Press <kbd>Space</kbd> to accept word</span>
-        </div>
-      </header>
-
       <main className="page-area">
         <div className="document-page">
           <GhostEditor />
+        </div>
+        <div className="hints-panel">
+          <div className="hints-title">Shortcuts</div>
+          <ul className="hints-list">
+            <li className="hint"><kbd>Space</kbd> accept word</li>
+            <li className="hint"><kbd>Tab</kbd> accept sentence</li>
+            <li className="hint"><kbd>`</kbd> pick alternative</li>
+          </ul>
         </div>
       </main>
     </div>
