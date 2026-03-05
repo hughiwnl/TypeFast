@@ -5,7 +5,7 @@ import './GhostEditor.css';
 const DEBOUNCE_MS = 400;
 const MIN_WORDS = 3;
 
-export default function GhostEditor({ onLimitReached }) {
+export default function GhostEditor({ onLimitReached, onTextChange }) {
   const [text, setText] = useState('');
   const [wordGhost, setWordGhost] = useState('');
   const [alternatives, setAlternatives] = useState([]);
@@ -109,6 +109,10 @@ export default function GhostEditor({ onLimitReached }) {
   useEffect(() => {
     textareaRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    onTextChange?.(text);
+  }, [text]);
 
   const prefix = text.split(' ').pop();
   const allSuggestions = [wordGhost, ...alternatives].filter(Boolean);
