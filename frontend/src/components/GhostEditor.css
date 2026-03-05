@@ -1,20 +1,16 @@
 .editor-wrapper {
   position: relative;
   width: 100%;
-  min-height: 300px;
-  border: 1px solid #333;
-  border-radius: 8px;
-  background: #111;
-  padding: 20px;
+  min-height: 864px; /* 1056px page - 96px*2 padding */
 }
 
-/* Shared font style — display and textarea must match exactly */
+/* Shared font — display and textarea must match exactly */
 .editor-display,
 .editor-textarea {
-  font-family: 'Georgia', serif;
-  font-size: 1.25rem;
-  line-height: 1.8;
-  letter-spacing: 0.01em;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  letter-spacing: 0;
   word-wrap: break-word;
   white-space: pre-wrap;
 }
@@ -23,31 +19,35 @@
 .editor-display {
   position: absolute;
   inset: 0;
-  padding: 20px;
   pointer-events: none;
-  color: transparent; /* real text is invisible here; textarea shows it */
+  color: transparent;
   user-select: none;
 }
 
-.editor-ghost {
-  color: #666;
+.editor-word-ghost {
+  color: #bec4ca;
+  background: #e6f4ea;
+  border-radius: 2px;
 }
 
-/* Transparent textarea sits on top, user types here */
+.editor-sentence-ghost {
+  color: #bec4ca;
+}
+
+/* Transparent textarea on top */
 .editor-textarea {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  padding: 20px;
   background: transparent;
   border: none;
   outline: none;
   resize: none;
-  color: #e8e8e8;
-  caret-color: #e8e8e8;
+  color: #202124;
+  caret-color: #202124;
 }
 
 .editor-textarea::placeholder {
-  color: #444;
+  color: #b0b8c1;
 }

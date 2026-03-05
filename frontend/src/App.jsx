@@ -1,28 +1,25 @@
-import { useState } from 'react';
 import GhostEditor from './components/GhostEditor';
 import './App.css';
 
 export default function App() {
-  const [context, setContext] = useState('');
-
   return (
     <div className="app">
-      <h1 className="title">TypeFast</h1>
-      <p className="subtitle">
-        Start typing. Press <kbd>Tab</kbd> to accept a word completion.
-      </p>
+      <header className="toolbar">
+        <div className="toolbar-left">
+          <div className="toolbar-icon">T</div>
+          <span className="toolbar-title">TypeFast</span>
+        </div>
+        <div className="toolbar-right">
+          <span className="hint">Press <kbd>Tab</kbd> to accept suggestion</span>
+          <span className="hint">Press <kbd>Space</kbd> to accept word</span>
+        </div>
+      </header>
 
-      <div className="context-row">
-        <input
-          className="context-input"
-          type="text"
-          placeholder="Writing context (optional) — e.g. 'a letter to my boss'"
-          value={context}
-          onChange={(e) => setContext(e.target.value)}
-        />
-      </div>
-
-      <GhostEditor context={context} />
+      <main className="page-area">
+        <div className="document-page">
+          <GhostEditor />
+        </div>
+      </main>
     </div>
   );
 }

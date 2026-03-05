@@ -1,53 +1,86 @@
 .app {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  min-height: 100vh;
 }
 
-.title {
-  font-size: 2rem;
-  font-weight: 400;
-  letter-spacing: 0.05em;
+/* ── Toolbar ── */
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toolbar-icon {
+  width: 36px;
+  height: 36px;
+  background: #4285f4;
   color: #fff;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: Arial, sans-serif;
 }
 
-.subtitle {
-  color: #888;
-  font-size: 0.95rem;
+.toolbar-title {
+  font-size: 1.1rem;
+  color: #202124;
+  font-weight: 400;
 }
 
-.subtitle kbd {
+.toolbar-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.hint {
+  font-size: 0.78rem;
+  color: #9aa0a6;
+}
+
+.hint kbd {
   display: inline-block;
   padding: 1px 6px;
-  border: 1px solid #555;
+  border: 1px solid #dadce0;
   border-radius: 4px;
-  background: #2a2a2a;
-  color: #ccc;
+  background: #f1f3f4;
+  color: #5f6368;
   font-family: monospace;
-  font-size: 0.85em;
+  font-size: 0.8em;
 }
 
-.context-row {
-  width: 100%;
+/* ── Page area ── */
+.page-area {
+  margin-top: 64px;
+  padding: 40px 0 80px;
+  display: flex;
+  justify-content: center;
 }
 
-.context-input {
-  width: 100%;
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 6px;
-  padding: 10px 14px;
-  color: #e8e8e8;
-  font-family: 'Georgia', serif;
-  font-size: 0.9rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.context-input:focus {
-  border-color: #555;
-}
-
-.context-input::placeholder {
-  color: #444;
+.document-page {
+  width: 816px;
+  min-height: 1056px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.1);
+  padding: 96px;
 }

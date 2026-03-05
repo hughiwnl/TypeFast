@@ -5,9 +5,10 @@ import './GhostEditor.css';
 const DEBOUNCE_MS = 400;
 const MIN_WORDS = 3;
 
-export default function GhostEditor({ context }) {
+export default function GhostEditor() {
   const [text, setText] = useState('');
-  const [ghost, setGhost] = useState('');
+  const [wordGhost, setWordGhost] = useState('');
+  const [sentenceGhost, setSentenceGhost] = useState('');
   const debounceRef = useRef(null);
   const abortRef = useRef(null);
   const textareaRef = useRef(null);
@@ -15,7 +16,8 @@ export default function GhostEditor({ context }) {
   const scheduleCompletion = useCallback((value) => {
     clearTimeout(debounceRef.current);
     abortRef.current?.abort();
-    setGhost('');
+    setWordGhost('');
+    setSentenceGhost('');
 
     const wordCount = value.trim().split(/\s+/).length;
     if (wordCount < MIN_WORDS) return;
@@ -24,22 +26,40 @@ export default function GhostEditor({ context }) {
       const controller = new AbortController();
       abortRef.current = controller;
       try {
-        const completion = await fetchCompletion(value, context, controller.signal);
-        setGhost(completion);
+        const { wordGhost, sentenceGhost } = await fetchCompletion(value, '', controller.signal);
+        setWordGhost(wordGhost);
+        setSentenceGhost(sentenceGhost);
       } catch (e) {
         if (e.name !== 'AbortError') {
           // Backend not reachable — silent fail
         }
       }
     }, DEBOUNCE_MS);
-  }, [context]);
+  }, []);
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Tab' && ghost) {
+    // Space: accept word completion only
+    if (e.key === ' ' && wordGhost) {
       e.preventDefault();
-      const accepted = text + ghost;
+      const accepted = text + wordGhost + ' ';
       setText(accepted);
-      setGhost('');
+      setWordGhost('');
+      setSentenceGhost('');
+      scheduleCompletion(accepted);
+      return;
+    }
+
+    // Tab: accept word + sentence together
+    if (e.key === 'Tab' && (wordGhost || sentenceGhost)) {
+      e.preventDefault();
+      const base = text + wordGhost;
+      const needsSpace = sentenceGhost &&
+        !base.endsWith(' ') &&
+        !/^[\s.,!?;:]/.test(sentenceGhost);
+      const accepted = base + (needsSpace ? ' ' : '') + sentenceGhost;
+      setText(accepted);
+      setWordGhost('');
+      setSentenceGhost('');
       scheduleCompletion(accepted);
     }
   };
@@ -58,7 +78,8 @@ export default function GhostEditor({ context }) {
     <div className="editor-wrapper">
       <div className="editor-display" aria-hidden="true">
         <span className="editor-text">{text}</span>
-        <span className="editor-ghost">{ghost}</span>
+        <span className="editor-word-ghost">{wordGhost}</span>
+        <span className="editor-sentence-ghost">{sentenceGhost}</span>
       </div>
 
       <textarea

@@ -5,18 +5,14 @@
 }
 
 body {
-  font-family: 'Georgia', serif;
-  background: #1a1a1a;
-  color: #e8e8e8;
+  font-family: Arial, sans-serif;
+  background: #f0f0f0;
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   -webkit-font-smoothing: antialiased;
 }
 
 #root {
-  width: 100%;
-  max-width: 800px;
-  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }

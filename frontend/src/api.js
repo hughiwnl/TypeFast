@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5000';
+const BASE_URL = 'http://localhost:5001';
 
 export async function fetchCompletion(text, context, signal) {
   const res = await fetch(`${BASE_URL}/complete`, {
@@ -8,5 +8,8 @@ export async function fetchCompletion(text, context, signal) {
     signal,
   });
   const data = await res.json();
-  return data.completion ?? '';
+  return {
+    wordGhost: data.word_ghost ?? '',
+    sentenceGhost: data.sentence_ghost ?? '',
+  };
 }
