@@ -112,7 +112,9 @@ export default function GhostEditor() {
 
   const prefix = text.split(' ').pop();
   const allSuggestions = [wordGhost, ...alternatives].filter(Boolean);
-  const showPanel = allSuggestions.length > 0 && prefix.length >= 2;
+
+  // Always show 5 slots; fill with suggestions when available
+  const slots = Array.from({ length: 5 }, (_, i) => allSuggestions[i] ?? null);
 
   return (
     <>
@@ -137,24 +139,26 @@ export default function GhostEditor() {
         />
       </div>
 
-      {showPanel && (
-        <div className={`suggestions-panel ${selecting ? 'selecting' : ''}`}>
-          <div className="suggestions-prefix">-{prefix}</div>
-          <ul className="suggestions-list">
-            {allSuggestions.map((suffix, i) => (
-              <li
-                key={i}
-                className="suggestion-item"
-                onClick={() => acceptWord(suffix)}
-              >
-                <span className="suggestion-number">{i + 1}</span>
-                <span className="suggestion-suffix">-{suffix || '(word)'}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="suggestions-hint">` then number to pick</div>
+      <div className={`suggestions-panel ${selecting ? 'selecting' : ''}`}>
+        <div className="suggestions-prefix">
+          {prefix ? `-${prefix}` : 'Suggestions'}
         </div>
-      )}
+        <ul className="suggestions-list">
+          {slots.map((suffix, i) => (
+            <li
+              key={i}
+              className={`suggestion-item ${suffix ? 'has-suffix' : 'empty'}`}
+              onClick={() => suffix && acceptWord(suffix)}
+            >
+              <span className="suggestion-number">{i + 1}</span>
+              <span className="suggestion-suffix">
+                {suffix ? `-${suffix}` : '—'}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div className="suggestions-hint">` then number to pick</div>
+      </div>
     </>
   );
 }
