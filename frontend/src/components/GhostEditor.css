@@ -51,3 +51,71 @@
 .editor-textarea::placeholder {
   color: #b0b8c1;
 }
+
+/* ── Suggestions panel ── */
+.suggestions-panel {
+  position: fixed;
+  top: 84px;
+  left: calc(50% + 424px); /* just right of the 816px document */
+  width: 172px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 10px 0 8px;
+  font-family: Arial, sans-serif;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.suggestions-panel.selecting {
+  border-color: #4285f4;
+  box-shadow: 0 0 0 2px rgba(66,133,244,0.2);
+}
+
+.suggestions-prefix {
+  font-size: 0.7rem;
+  color: #9aa0a6;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 12px 6px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.suggestions-list {
+  list-style: none;
+  margin: 4px 0;
+  padding: 0;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.suggestion-item:hover {
+  background: #f1f3f4;
+}
+
+.suggestion-number {
+  font-size: 0.72rem;
+  color: #9aa0a6;
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.suggestion-suffix {
+  font-size: 0.875rem;
+  color: #202124;
+}
+
+.suggestions-hint {
+  font-size: 0.68rem;
+  color: #bec4ca;
+  padding: 6px 12px 0;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 2px;
+}

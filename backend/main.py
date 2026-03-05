@@ -14,10 +14,10 @@ def complete():
     context = data.get('context', '')
 
     if not text.strip():
-        return jsonify({'word_ghost': '', 'sentence_ghost': ''})
+        return jsonify({'word_ghost': '', 'alternatives': [], 'sentence_ghost': ''})
 
-    word_ghost, sentence_ghost = model.complete(text, context)
-    return jsonify({'word_ghost': word_ghost, 'sentence_ghost': sentence_ghost})
+    word_ghost, alternatives, sentence_ghost = model.complete(text, context)
+    return jsonify({'word_ghost': word_ghost, 'alternatives': alternatives, 'sentence_ghost': sentence_ghost})
 
 if __name__ == '__main__':
     app.run(debug=True)

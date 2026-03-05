@@ -15,9 +15,11 @@ class LLMModel:
             "Your job is to predict what comes next based STRICTLY on the content, topic, and style "
             "of what the user has already written. Do NOT introduce random or unrelated content — "
             "continue the user's specific thought as if you are them.\n\n"
-            "Return a JSON object with exactly two fields:\n"
-            "- completed_word: the full completed version of the last partial word "
+            "Return a JSON object with exactly three fields:\n"
+            "- completed_word: the most likely full completion of the last partial word "
             "(empty string if the text ends with a space or punctuation)\n"
+            "- alternatives: an array of up to 5 other plausible full word completions for the partial word, "
+            "ordered by likelihood. Each must start with the same partial word. Do NOT include completed_word.\n"
             "- sentence_continuation: text that naturally continues the user's current thought AFTER "
             "the completed word. Do NOT repeat the completed word. Do NOT end with terminal punctuation. "
             "Keep it under 15 words.\n"
@@ -35,19 +37,26 @@ class LLMModel:
                 {"role": "user", "content": user_prompt},
             ],
             response_format={"type": "json_object"},
-            max_tokens=100,
-            temperature=0.3,
+            max_tokens=200,
+            temperature=0.5,
         )
 
         result = json.loads(response.choices[0].message.content)
         completed_word = result.get("completed_word", "")
+        alternatives_raw = result.get("alternatives", [])
         sentence_continuation = result.get("sentence_continuation", "")
 
-        # Compute only the missing suffix from the partial word
+        # Compute the ghost suffix for the primary completion
         if prefix and completed_word.lower().startswith(prefix.lower()):
             word_ghost = completed_word[len(prefix):]
         else:
             word_ghost = ""
+
+        # Compute suffixes for each alternative (only keep valid ones)
+        alternatives = []
+        for alt in alternatives_raw:
+            if isinstance(alt, str) and alt.lower().startswith(prefix.lower()):
+                alternatives.append(alt[len(prefix):])
 
         # Strip trailing terminal punctuation — user adds their own
         sentence_continuation = sentence_continuation.rstrip('.!?')
@@ -56,4 +65,4 @@ class LLMModel:
         if sentence_continuation and sentence_continuation[0].isalnum():
             sentence_continuation = ' ' + sentence_continuation
 
-        return word_ghost, sentence_continuation
+        return word_ghost, alternatives, sentence_continuation

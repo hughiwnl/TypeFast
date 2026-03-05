@@ -10,6 +10,7 @@ export async function fetchCompletion(text, context, signal) {
   const data = await res.json();
   return {
     wordGhost: data.word_ghost ?? '',
+    alternatives: data.alternatives ?? [],
     sentenceGhost: data.sentence_ghost ?? '',
   };
 }

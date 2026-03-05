@@ -8,7 +8,9 @@ const MIN_WORDS = 3;
 export default function GhostEditor() {
   const [text, setText] = useState('');
   const [wordGhost, setWordGhost] = useState('');
+  const [alternatives, setAlternatives] = useState([]);
   const [sentenceGhost, setSentenceGhost] = useState('');
+  const [selecting, setSelecting] = useState(false);
   const debounceRef = useRef(null);
   const abortRef = useRef(null);
   const textareaRef = useRef(null);
@@ -17,7 +19,9 @@ export default function GhostEditor() {
     clearTimeout(debounceRef.current);
     abortRef.current?.abort();
     setWordGhost('');
+    setAlternatives([]);
     setSentenceGhost('');
+    setSelecting(false);
 
     const wordCount = value.trim().split(/\s+/).length;
     if (wordCount < MIN_WORDS) return;
@@ -26,8 +30,9 @@ export default function GhostEditor() {
       const controller = new AbortController();
       abortRef.current = controller;
       try {
-        const { wordGhost, sentenceGhost } = await fetchCompletion(value, '', controller.signal);
+        const { wordGhost, alternatives, sentenceGhost } = await fetchCompletion(value, '', controller.signal);
         setWordGhost(wordGhost);
+        setAlternatives(alternatives);
         setSentenceGhost(sentenceGhost);
       } catch (e) {
         if (e.name !== 'AbortError') {
@@ -37,15 +42,44 @@ export default function GhostEditor() {
     }, DEBOUNCE_MS);
   }, []);
 
+  const acceptWord = useCallback((suffix) => {
+    const accepted = text + suffix + ' ';
+    setText(accepted);
+    setWordGhost('');
+    setAlternatives([]);
+    setSentenceGhost('');
+    setSelecting(false);
+    scheduleCompletion(accepted);
+  }, [text, scheduleCompletion]);
+
   const handleKeyDown = (e) => {
-    // Space: accept word completion only
+    // Backtick: enter/exit selection mode
+    if (e.key === '`') {
+      if (wordGhost || alternatives.length > 0) {
+        e.preventDefault();
+        setSelecting((prev) => !prev);
+      }
+      return;
+    }
+
+    // While in selection mode, number keys pick an alternative
+    if (selecting) {
+      const num = parseInt(e.key);
+      if (!isNaN(num)) {
+        e.preventDefault();
+        const all = [wordGhost, ...alternatives];
+        const chosen = all[num - 1];
+        if (chosen !== undefined) acceptWord(chosen);
+        return;
+      }
+      // Any other key cancels selection mode and types normally
+      setSelecting(false);
+    }
+
+    // Space: accept primary word ghost
     if (e.key === ' ' && wordGhost) {
       e.preventDefault();
-      const accepted = text + wordGhost + ' ';
-      setText(accepted);
-      setWordGhost('');
-      setSentenceGhost('');
-      scheduleCompletion(accepted);
+      acceptWord(wordGhost);
       return;
     }
 
@@ -59,7 +93,9 @@ export default function GhostEditor() {
       const accepted = base + (needsSpace ? ' ' : '') + sentenceGhost;
       setText(accepted);
       setWordGhost('');
+      setAlternatives([]);
       setSentenceGhost('');
+      setSelecting(false);
       scheduleCompletion(accepted);
     }
   };
@@ -74,26 +110,51 @@ export default function GhostEditor() {
     textareaRef.current?.focus();
   }, []);
 
+  const prefix = text.split(' ').pop();
+  const allSuggestions = [wordGhost, ...alternatives].filter(Boolean);
+  const showPanel = allSuggestions.length > 0 && prefix.length >= 2;
+
   return (
-    <div className="editor-wrapper">
-      <div className="editor-display" aria-hidden="true">
-        <span className="editor-text">{text}</span>
-        <span className="editor-word-ghost">{wordGhost}</span>
-        <span className="editor-sentence-ghost">{sentenceGhost}</span>
+    <>
+      <div className="editor-wrapper">
+        <div className="editor-display" aria-hidden="true">
+          <span className="editor-text">{text}</span>
+          <span className="editor-word-ghost">{wordGhost}</span>
+          <span className="editor-sentence-ghost">{sentenceGhost}</span>
+        </div>
+
+        <textarea
+          ref={textareaRef}
+          className="editor-textarea"
+          value={text}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          spellCheck={false}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          placeholder="Start typing..."
+        />
       </div>
 
-      <textarea
-        ref={textareaRef}
-        className="editor-textarea"
-        value={text}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        spellCheck={false}
-        autoComplete="off"
-        autoCorrect="off"
-        autoCapitalize="off"
-        placeholder="Start typing..."
-      />
-    </div>
+      {showPanel && (
+        <div className={`suggestions-panel ${selecting ? 'selecting' : ''}`}>
+          <div className="suggestions-prefix">-{prefix}</div>
+          <ul className="suggestions-list">
+            {allSuggestions.map((suffix, i) => (
+              <li
+                key={i}
+                className="suggestion-item"
+                onClick={() => acceptWord(suffix)}
+              >
+                <span className="suggestion-number">{i + 1}</span>
+                <span className="suggestion-suffix">-{suffix || '(word)'}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="suggestions-hint">` then number to pick</div>
+        </div>
+      )}
+    </>
   );
 }
