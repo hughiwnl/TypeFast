@@ -141,7 +141,7 @@ export default function GhostEditor() {
 
       <div className={`suggestions-panel ${selecting ? 'selecting' : ''}`}>
         <div className="suggestions-prefix">
-          {prefix ? `-${prefix}` : 'Suggestions'}
+          {prefix ? `${prefix}-` : 'Suggestions'}
         </div>
         <ul className="suggestions-list">
           {slots.map((suffix, i) => (
