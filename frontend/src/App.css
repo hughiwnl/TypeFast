@@ -4,9 +4,34 @@
   min-height: 100vh;
 }
 
+/* ── Wordmark ── */
+.app-wordmark {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  font-family: Arial, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1f2124;
+  letter-spacing: 0.02em;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.app-wordmark-ghost {
+  background: #a8d5b5;
+  color: #1a3d28;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+.app-wordmark-sentence {
+  color: #7a8088;
+}
+
 /* ── Page area ── */
 .page-area {
-  padding: 40px 0 80px;
+  padding: 100px 0 80px;
   display: flex;
   justify-content: center;
   position: relative;
@@ -67,7 +92,10 @@
 .document-page {
   width: 816px;
   min-height: 1056px;
-  background: #fff;
+  /* Page break hairline every 1056px (letter page at 96 dpi) */
+  background-color: #fff;
+  background-image: linear-gradient(to bottom, transparent calc(1056px - 1px), #c8c8c8 calc(1056px - 1px), #c8c8c8 1056px, transparent 1056px);
+  background-size: 100% 1056px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.1);
   padding: 96px;
 }

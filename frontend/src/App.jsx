@@ -4,6 +4,9 @@ import './App.css';
 export default function App() {
   return (
     <div className="app">
+      <div className="app-wordmark">
+        <span>Ty</span><span className="app-wordmark-ghost">pe</span><span className="app-wordmark-sentence">Fast</span>
+      </div>
       <main className="page-area">
         <div className="document-page">
           <GhostEditor />
