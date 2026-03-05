@@ -5,13 +5,12 @@ import './GhostEditor.css';
 const DEBOUNCE_MS = 400;
 const MIN_WORDS = 3;
 
-export default function GhostEditor() {
+export default function GhostEditor({ onLimitReached }) {
   const [text, setText] = useState('');
   const [wordGhost, setWordGhost] = useState('');
   const [alternatives, setAlternatives] = useState([]);
   const [sentenceGhost, setSentenceGhost] = useState('');
   const [selecting, setSelecting] = useState(false);
-  const [limitReached, setLimitReached] = useState(false);
   const debounceRef = useRef(null);
   const abortRef = useRef(null);
   const textareaRef = useRef(null);
@@ -37,7 +36,7 @@ export default function GhostEditor() {
         setSentenceGhost(sentenceGhost);
       } catch (e) {
         if (e.message === 'daily_limit') {
-          setLimitReached(true);
+          onLimitReached();
         }
       }
     }, DEBOUNCE_MS);
@@ -119,11 +118,6 @@ export default function GhostEditor() {
 
   return (
     <>
-      {limitReached && (
-        <div className="limit-banner">
-          Daily request limit reached — autocomplete is disabled until tomorrow.
-        </div>
-      )}
       <div className="editor-wrapper">
         <div className="editor-display" aria-hidden="true">
           <span className="editor-text">{text}</span>

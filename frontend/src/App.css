@@ -33,7 +33,8 @@
 .page-area {
   padding: 100px 0 80px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   position: relative;
 }
 
@@ -87,6 +88,19 @@
   font-family: monospace;
   font-size: 0.8em;
   flex-shrink: 0;
+}
+
+/* ── Limit banner ── */
+.limit-banner {
+  width: 816px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: #fef3cd;
+  border: 1px solid #f5c542;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: #7a5c00;
+  box-sizing: border-box;
 }
 
 .document-page {
