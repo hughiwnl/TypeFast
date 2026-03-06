@@ -58,8 +58,6 @@ The purpose of TypeFast is to help people with motor disabilities have an easier
 ## System Design
 
 ### Model choice: GPT-4o-mini
-GPT-4o-mini was chosen over running a local model (e.g. GPT-2) for three reasons:
-- **Quality** — produces far more natural and contextually accurate completions
 - **Cost** — at ~$0.15/1M input tokens, a full essay costs under $0.01
 
 
