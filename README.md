@@ -67,7 +67,7 @@ The purpose of TypeFast is to help people with motor disabilities have an easier
 - Completions only trigger after **3+ words** of context, avoiding meaningless suggestions on short input
 - Only the **last 3,000 characters** of the document are sent to the API — roughly 4 pages of text. This keeps token costs low and actually improves suggestion quality, since recent context is more relevant than the beginning of a long document
 
-### How the daily rate limit works
+### How the daily rate limit works (ignore if you are going to run this locally) 
 The app enforces a global cap of 20 completions per day across all users using an **in-memory counter** protected by a `threading.Lock()`. A stored date is compared to today's date on every request; if the date has changed, the counter resets automatically.
 
 This works without a database because the app runs as a **single Gunicorn worker with 4 threads**. A single worker means all threads share the same process memory, so the counter is truly global. Four workers would create four separate memory spaces and allow up to 4×20 = 80 requests, defeating the limit. The thread based model gives the same concurrency benefit (non-blocking I/O across simultaneous requests) without fragmenting state.
