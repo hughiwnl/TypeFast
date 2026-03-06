@@ -128,6 +128,96 @@
   box-sizing: border-box;
 }
 
+/* ── Welcome modal ── */
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.welcome-modal {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 36px 40px;
+  width: 480px;
+  font-family: Arial, sans-serif;
+}
+
+.welcome-wordmark {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1f2124;
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+}
+
+.welcome-modal p {
+  font-size: 0.88rem;
+  color: #3c4043;
+  line-height: 1.6;
+  margin: 0 0 14px;
+}
+
+.welcome-notice {
+  background: #fef3cd;
+  border: 1px solid #f5c542;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 0.83rem !important;
+  color: #7a5c00 !important;
+}
+
+.welcome-notice a {
+  color: #7a5c00;
+}
+
+.welcome-button {
+  margin-top: 8px;
+  width: 100%;
+  padding: 10px;
+  background: #a8d5b5;
+  color: #1a3d28;
+  border: none;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.welcome-button:hover {
+  background: #95c9a3;
+}
+
+/* ── GitHub link ── */
+.github-link {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e4e4e4;
+  border: 1px solid #d4d4d4;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5f6368;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.github-link:hover {
+  background: #d0d0d0;
+  color: #1f2124;
+}
+
 .document-page {
   width: 816px;
   min-height: 1056px;
