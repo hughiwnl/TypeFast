@@ -4,6 +4,8 @@ from llmbackend import LLMModel
 import threading
 from datetime import date
 
+# Set to False if you're self-hosting and want unlimited requests
+LIMIT_ENABLED = True
 DAILY_LIMIT = 20
 
 _lock = threading.Lock()
@@ -27,7 +29,7 @@ model = LLMModel()
 
 @app.route('/complete', methods=['POST'])
 def complete():
-    if not check_and_increment():
+    if LIMIT_ENABLED and not check_and_increment():
         return jsonify({'error': 'Daily request limit reached. Try again tomorrow.'}), 429
 
     data = request.json

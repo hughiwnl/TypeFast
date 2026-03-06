@@ -139,6 +139,16 @@ curl http://localhost:5000/status
 # {"requests_today": 4, "limit": 20, "remaining": 16}
 ```
 
+### Forking / self-hosting without limits
+
+The daily cap exists to protect the API key on the public deployment. If you fork this repo and use your own key, open `backend/main.py` and set:
+
+```python
+LIMIT_ENABLED = False
+```
+
+That's it — the limit check is skipped entirely and you'll have unlimited completions billed directly to your own OpenAI account.
+
 ---
 
 ## Project Structure
