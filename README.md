@@ -1,31 +1,34 @@
-# TypeFast
+# What is TypeFast
 
-An AI-powered typing assistant designed to help people with motor disabilities type faster and with less effort. As you type, TypeFast predicts how your current word ends and suggests a natural sentence continuation — accept it with a single keystroke.
+A typing assistant targetted towards people with motor disabilities to help them type faster with automatic word and sentence completion. As you type, TypeFast predicts how your current word ends and also suggests a natural sentence continuation, which you can accept with one  button.
+
+---
+
+## What is the purpose
+
+The purpose of TypeFast is to help people with motor disabilities have an easier time typing through word and sentence auto completion. The goal is SOLELY this. Once the user is finished typing, editing things like font, spacing, and font size should be done in another document editor. 
+- **IMPORTANT** — This is a project deployed on the internet mainly for my resume, so the app limits to 20 completions per day across all users, with a banner shown when the limit is reached. If you would like to use this app for yourself, follow the instructions in [Installation](#installation)
 
 ---
 
 ## How It Works
 
 1. Type naturally in the editor
-2. After 3+ words, TypeFast sends your recent text to GPT-4o-mini
+2. After, TypeFast sends your recent text to GPT-4o-mini
 3. A ghost suggestion appears inline — completing your partial word and continuing the sentence
 4. Accept with **Space** (word only) or **Tab** (word + full sentence continuation)
-5. Press **`** to open the alternatives picker, then a number key to swap in a different word
+5. If the suffix is incorrect, you can press **`** to open the alternatives picker, then a number key to swap in a different word
 
 ---
 
 ## Features
 
 - **Inline ghost text** — suggestions appear directly after your cursor, not in a separate panel
-- **Word + sentence completion** — finishes the word you're mid-typing *and* suggests how the sentence continues
+- **Word + sentence completion** — finishes the word you're mid typing *and* suggests how the sentence continues
 - **Space to accept word** — inserts just the completed word and immediately queues the next suggestion
 - **Tab to accept sentence** — accepts the full word + sentence continuation in one keystroke, minimizing motor effort
 - **Word alternatives** — up to 5 alternative word completions shown in a sidebar panel; press **`** then a number key to pick one, or click directly
 - **Copy button** — one click copies the full document text to the clipboard, ready to paste anywhere
-- **Google Docs-matching layout** — 816px wide, 96px margins, Arial 11pt, 1.15 line-height; text fills pages identically to Google Docs
-- **Page break hairlines** — a subtle divider appears every 1056px (one US Letter page at 96 dpi) so you can see page boundaries while writing
-- **Request cancellation** — in-flight API calls are aborted when you type again, preventing stale completions and wasted quota
-- **Daily usage cap** — limits the app to 20 completions per day across all users, with a banner shown when the limit is reached
 
 ---
 
@@ -58,13 +61,10 @@ An AI-powered typing assistant designed to help people with motor disabilities t
 GPT-4o-mini was chosen over running a local model (e.g. GPT-2) for three reasons:
 - **Quality** — produces far more natural and contextually accurate completions
 - **Cost** — at ~$0.15/1M input tokens, a full essay costs under $0.01
-- **No local dependencies** — eliminates PyTorch (~2GB) and the need for GPU hardware
 
-### Frontend: two-layer editor
-The text editor uses a transparent `<textarea>` overlaid on a display `<div>`. The textarea captures all keyboard input while the display layer renders the real text plus the grey ghost spans. This avoids the complexity of `contenteditable` while keeping cursor behavior native and accessible.
 
 ### Request lifecycle
-- Completions are **debounced at 400ms** — no request fires while the user is actively typing
+- Completions are **debounced at 400ms** — no request fires while the user is actively typing. You can change this if it's too slow or too fast by adjusting `const DEBOUNCE_MS = 400;` in the `'frontend/src/components/GhostEditor.jsx'` file. The purpose of this, is because people with motor disabilities usually type in characters at a slow rate, so this min-maxes calls to OpenAPI while providing a smooth typing experience.
 - Each new debounce cycle **aborts the previous in-flight request** via `AbortController`, preventing race conditions where a slow response overwrites a newer suggestion
 - Completions only trigger after **3+ words** of context, avoiding meaningless suggestions on short input
 - Only the **last 3,000 characters** of the document are sent to the API — roughly 4 pages of text. This keeps token costs low and actually improves suggestion quality, since recent context is more relevant than the beginning of a long document
@@ -72,7 +72,7 @@ The text editor uses a transparent `<textarea>` overlaid on a display `<div>`. T
 ### Daily rate limit: no database required
 The app enforces a global cap of 20 completions per day across all users using an **in-memory counter** protected by a `threading.Lock()`. A stored date is compared to today's date on every request; if the date has changed, the counter resets automatically.
 
-This works without a database because the app runs as a **single Gunicorn worker with 4 threads**. A single worker means all threads share the same process memory, so the counter is truly global. Four workers would create four separate memory spaces and allow up to 4×20 = 80 requests — defeating the limit. The thread-based model gives the same concurrency benefit (non-blocking I/O across simultaneous requests) without fragmenting state.
+This works without a database because the app runs as a **single Gunicorn worker with 4 threads**. A single worker means all threads share the same process memory, so the counter is truly global. Four workers would create four separate memory spaces and allow up to 4×20 = 80 requests, defeating the limit. The thread based model gives the same concurrency benefit (non-blocking I/O across simultaneous requests) without fragmenting state.
 
 This is a deliberate tradeoff: the limit resets if the server restarts, but for a portfolio project with light traffic this is acceptable and removes all operational complexity.
 
@@ -94,7 +94,7 @@ A user who fills one page on TypeFast and pastes into Google Docs will see exact
 
 ---
 
-## Running Locally
+## Installation
 
 ### Prerequisites
 - Docker and Docker Compose
