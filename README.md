@@ -67,7 +67,7 @@ The purpose of TypeFast is to help people with motor disabilities have an easier
 - Completions only trigger after **3+ words** of context, avoiding meaningless suggestions on short input
 - Only the **last 3,000 characters** of the document are sent to the API — roughly 4 pages of text. This keeps token costs low and actually improves suggestion quality, since recent context is more relevant than the beginning of a long document
 
-### Daily rate limit: no database required
+### How the daily rate limit works
 The app enforces a global cap of 20 completions per day across all users using an **in-memory counter** protected by a `threading.Lock()`. A stored date is compared to today's date on every request; if the date has changed, the counter resets automatically.
 
 This works without a database because the app runs as a **single Gunicorn worker with 4 threads**. A single worker means all threads share the same process memory, so the counter is truly global. Four workers would create four separate memory spaces and allow up to 4×20 = 80 requests, defeating the limit. The thread based model gives the same concurrency benefit (non-blocking I/O across simultaneous requests) without fragmenting state.
@@ -81,14 +81,6 @@ gunicorn -w 1 --threads 4 -b 0.0.0.0:5000 main:app
 - **1 worker** — keeps shared in-memory state (the rate limit counter) consistent
 - **4 threads** — allows up to 4 concurrent requests without blocking; since most time is spent waiting on the OpenAI API (I/O), threads are sufficient
 
-### Page dimensions
-The document area exactly mirrors Google Docs default settings:
-- **Width:** 816px (8.5in at 96 dpi)
-- **Margins:** 96px (1in) on all sides
-- **Page height:** 1056px (11in at 96 dpi)
-- **Font:** Arial 11pt (14.67px), line-height 1.15
-
-A user who fills one page on TypeFast and pastes into Google Docs will see exactly one page.
 
 ---
 
@@ -128,13 +120,6 @@ OPENAI_API_KEY=sk-... python main.py
 cd frontend
 npm install
 npm run dev
-```
-
-### Checking the rate limit
-
-```bash
-curl http://localhost:5000/status
-# {"requests_today": 4, "limit": 20, "remaining": 16}
 ```
 
 ### Forking / self-hosting without limits
