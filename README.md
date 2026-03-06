@@ -7,7 +7,7 @@ A typing assistant targetted towards people with motor disabilities to help them
 ## What is the purpose
 
 The purpose of TypeFast is to help people with motor disabilities have an easier time typing through word and sentence auto completion. The goal is SOLELY this. Once the user is finished typing, editing things like font, spacing, and font size should be done in another document editor. 
-- **IMPORTANT** — This is a project deployed on the internet mainly for my resume, so the app limits to 20 completions per day across all users, with a banner shown when the limit is reached. If you would like to use this app for yourself, follow the instructions in [Installation](#installation)
+- **IMPORTANT** — This is a project deployed on the internet mainly for my resume, so the app limits to 20 completions per day across all users, with a banner shown when the limit is reached. If you would like to use this app for yourself without the limits, follow the instructions in [installation](#installation)
 
 ---
 
