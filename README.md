@@ -6,8 +6,7 @@ A typing assistant targetted towards people with motor disabilities to help them
 
 ## What is the purpose
 
-The purpose of TypeFast is to help people with motor disabilities have an easier time typing through word and sentence auto completion. The goal is SOLELY this. Once the user is finished typing, editing things like font, spacing, and font size should be done in another document editor. 
-- **IMPORTANT** — This is a project deployed on the internet mainly for my resume, so the app limits to 20 completions per day across all users, with a banner shown when the limit is reached. If you would like to use this app for yourself without the limits, follow the instructions in [installation](#installation)
+The purpose of TypeFast is to help people with motor disabilities have an easier time typing through word and sentence auto completion. The goal is SOLELY this. Once the user is finished typing, editing things like font, spacing, and font size should be done in another document editor.
 
 ---
 
@@ -50,7 +49,7 @@ The purpose of TypeFast is to help people with motor disabilities have an easier
 | Frontend | React + Vite |
 | Backend | Python + Flask |
 | AI Model | OpenAI GPT-4o-mini |
-| Server | Gunicorn (1 worker, 4 threads) |
+| Server | Gunicorn |
 | Containerization | Docker + Docker Compose |
 
 ---
@@ -67,20 +66,12 @@ The purpose of TypeFast is to help people with motor disabilities have an easier
 - Completions only trigger after **3+ words** of context, avoiding meaningless suggestions on short input
 - Only the **last 3,000 characters** of the document are sent to the API — roughly 4 pages of text. This keeps token costs low and actually improves suggestion quality, since recent context is more relevant than the beginning of a long document
 
-### How the daily rate limit works (ignore if you are going to run this locally) 
-The app enforces a global cap of 20 completions per day across all users using an **in-memory counter** protected by a `threading.Lock()`. A stored date is compared to today's date on every request; if the date has changed, the counter resets automatically.
-
-This works without a database because the app runs as a **single Gunicorn worker with 4 threads**. A single worker means all threads share the same process memory, so the counter is truly global. Four workers would create four separate memory spaces and allow up to 4×20 = 80 requests, defeating the limit. The thread based model gives the same concurrency benefit (non-blocking I/O across simultaneous requests) without fragmenting state.
-
-This is a deliberate tradeoff: the limit resets if the server restarts, but for a portfolio project with light traffic this is acceptable and removes all operational complexity.
-
 ### Gunicorn: 1 worker, 4 threads
 ```
 gunicorn -w 1 --threads 4 -b 0.0.0.0:5000 main:app
 ```
-- **1 worker** — keeps shared in-memory state (the rate limit counter) consistent
 - **4 threads** — allows up to 4 concurrent requests without blocking; since most time is spent waiting on the OpenAI API (I/O), threads are sufficient
-
+- **1 worker** — plenty for a single user or small group. The backend is stateless, so if you need more throughput you can raise `-w` in `backend/Dockerfile`
 
 ---
 
@@ -94,7 +85,7 @@ gunicorn -w 1 --threads 4 -b 0.0.0.0:5000 main:app
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/TypeFast.git
+git clone https://github.com/hughiwnl/TypeFast.git
 cd TypeFast
 
 # 2. Add your API key
@@ -106,7 +97,7 @@ docker compose up --build
 ```
 
 - Frontend: http://localhost:3000
-- Backend: http://localhost:5000
+- Backend: http://localhost:5001
 
 ### Running without Docker
 
@@ -122,15 +113,15 @@ npm install
 npm run dev
 ```
 
-### Forking / self-hosting without limits
+### Configuration
 
-The daily cap exists to protect the API key on the public deployment. If you fork this repo and use your own key, open `backend/main.py` and set:
+| Variable | Where | Default | Purpose |
+|----------|-------|---------|---------|
+| `OPENAI_API_KEY` | backend | — | Your OpenAI API key (required) |
+| `VITE_API_URL` | frontend (build/dev time) | `http://localhost:5001` | Where the frontend finds the backend |
+| `CORS_ORIGINS` | backend | `*` | Comma-separated list of origins allowed to call the backend. Set this if you deploy publicly |
 
-```python
-LIMIT_ENABLED = False
-```
-
-That's it — the limit check is skipped entirely and you'll have unlimited completions billed directly to your own OpenAI account.
+Completions are billed directly to your own OpenAI account, so if you expose the backend publicly, restrict `CORS_ORIGINS` and consider adding your own rate limiting.
 
 ---
 
@@ -139,13 +130,13 @@ That's it — the limit check is skipped entirely and you'll have unlimited comp
 ```
 TypeFast/
 ├── backend/
-│   ├── main.py          # Flask API — /complete and /status endpoints
+│   ├── main.py          # Flask API — /complete endpoint
 │   ├── llmbackend.py    # OpenAI GPT-4o-mini integration + prompt
 │   ├── requirements.txt
 │   └── Dockerfile
 ├── frontend/
 │   ├── src/
-│   │   ├── App.jsx               # Root layout, limit state, copy button
+│   │   ├── App.jsx               # Root layout, copy button
 │   │   ├── App.css               # Page layout, wordmark, panels
 │   │   ├── api.js                # fetch wrapper with AbortController
 │   │   └── components/
@@ -154,5 +145,12 @@ TypeFast/
 │   └── Dockerfile
 ├── docker-compose.yml
 ├── .env.example
+├── LICENSE
 └── .gitignore
 ```
+
+---
+
+## License
+
+[MIT](LICENSE)

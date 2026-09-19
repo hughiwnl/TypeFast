@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5001';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 export async function fetchCompletion(text, context, signal) {
   const res = await fetch(`${BASE_URL}/complete`, {
@@ -7,9 +7,6 @@ export async function fetchCompletion(text, context, signal) {
     body: JSON.stringify({ text, context }),
     signal,
   });
-  if (res.status === 429) {
-    throw new Error('daily_limit');
-  }
   const data = await res.json();
   return {
     wordGhost: data.word_ghost ?? '',

@@ -115,19 +115,6 @@
   flex-shrink: 0;
 }
 
-/* ── Limit banner ── */
-.limit-banner {
-  width: 816px;
-  margin-bottom: 12px;
-  padding: 8px 12px;
-  background: #fef3cd;
-  border: 1px solid #f5c542;
-  border-radius: 6px;
-  font-size: 0.82rem;
-  color: #7a5c00;
-  box-sizing: border-box;
-}
-
 /* ── Welcome modal ── */
 .welcome-overlay {
   position: fixed;
@@ -161,19 +148,6 @@
   color: #3c4043;
   line-height: 1.6;
   margin: 0 0 14px;
-}
-
-.welcome-notice {
-  background: #fef3cd;
-  border: 1px solid #f5c542;
-  border-radius: 6px;
-  padding: 10px 14px;
-  font-size: 0.83rem !important;
-  color: #7a5c00 !important;
-}
-
-.welcome-notice a {
-  color: #7a5c00;
 }
 
 .welcome-button {

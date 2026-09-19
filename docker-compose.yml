@@ -5,9 +5,13 @@ services:
       - "5001:5000"
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:5001}
     ports:
       - "3000:80"
     depends_on:

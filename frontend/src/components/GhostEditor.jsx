@@ -5,7 +5,7 @@ import './GhostEditor.css';
 const DEBOUNCE_MS = 400;
 const MIN_WORDS = 3;
 
-export default function GhostEditor({ onLimitReached, onTextChange }) {
+export default function GhostEditor({ onTextChange }) {
   const [text, setText] = useState('');
   const [wordGhost, setWordGhost] = useState('');
   const [alternatives, setAlternatives] = useState([]);
@@ -34,10 +34,8 @@ export default function GhostEditor({ onLimitReached, onTextChange }) {
         setWordGhost(wordGhost);
         setAlternatives(alternatives);
         setSentenceGhost(sentenceGhost);
-      } catch (e) {
-        if (e.message === 'daily_limit') {
-          onLimitReached();
-        }
+      } catch {
+        // Aborted or failed request — keep the editor usable without a suggestion
       }
     }, DEBOUNCE_MS);
   }, []);

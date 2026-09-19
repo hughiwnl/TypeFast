@@ -3,7 +3,6 @@ import GhostEditor from './components/GhostEditor';
 import './App.css';
 
 export default function App() {
-  const [limitReached, setLimitReached] = useState(false);
   const [showWelcome, setShowWelcome] = useState(
     !localStorage.getItem('typefast_welcomed')
   );
@@ -31,15 +30,6 @@ export default function App() {
               editing things like font, spacing, and font size should be done in
               another document editor.
             </p>
-            <p className="welcome-notice">
-              <strong>IMPORTANT —</strong> This app is deployed mainly as a resume project,
-              so completions are limited to <strong>20 per day</strong> across all users.
-              If you'd like to use it without limits,{' '}
-              <a href="https://github.com/hughiwnl/TypeFast" target="_blank" rel="noreferrer">
-                visit the GitHub page
-              </a>{' '}
-              for installation instructions.
-            </p>
             <button className="welcome-button" onClick={dismissWelcome}>
               Got it
             </button>
@@ -50,14 +40,8 @@ export default function App() {
         <span>Ty</span><span className="app-wordmark-ghost">pe</span><span className="app-wordmark-sentence">Fast</span>
       </div>
       <main className="page-area">
-        {limitReached && (
-          <div className="limit-banner">
-            Daily request limit reached — autocomplete is disabled until tomorrow.
-          </div>
-        )}
         <div className="document-page">
           <GhostEditor
-            onLimitReached={() => setLimitReached(true)}
             onTextChange={(t) => { textRef.current = t; }}
           />
         </div>
